@@ -1,42 +1,156 @@
-# bus-admin
+# 无人驾驶公交车运行管理系统 - 前端
 
-This template should help get you started developing with Vue 3 in Vite.
+基于 Vue 3 + TypeScript + Element Plus 的管理后台前端。
 
-## Recommended IDE Setup
+## 技术栈
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+| 分类 | 技术 | 版本 |
+|------|------|------|
+| 框架 | Vue 3 (Composition API) | 3.5.x |
+| 语言 | TypeScript | 6.0 |
+| 构建工具 | Vite | 8.x |
+| UI 组件库 | Element Plus | 2.8.x |
+| 图标 | @element-plus/icons-vue | 2.3.x |
+| 路由 | Vue Router | 4.4.x |
+| 状态管理 | Pinia | 2.2.x |
+| HTTP 请求 | Axios | 1.7.x |
+| 图表 | ECharts | 6.1.x |
 
-## Recommended Browser Setup
+## 快速启动
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### 环境要求
 
-## Type Support for `.vue` Imports in TS
+- Node.js 18+
+- npm 或 pnpm
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### 安装依赖
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发模式启动
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+启动后访问 **http://localhost:5173**，Vite 已配置代理将 `/api` 请求转发到后端 `http://127.0.0.1:8080`。
 
-```sh
+> 启动前端前请确保后端服务（bus-service）已运行，且 MySQL、Redis 均已启动。
+
+### 生产构建
+
+```bash
 npm run build
 ```
+
+构建产物输出到 `dist/` 目录。
+
+## 默认账号
+
+| 账号 | 密码 | 角色 | 可见功能 |
+|------|------|------|----------|
+| admin | 123456 | 系统管理员 | 全部菜单：仪表盘、站点/线路/车辆管理（可增删改）、告警管理、告警类型管理、用户管理、操作日志 |
+| safety | 123456 | 安全员 | 仪表盘、站点/线路/车辆（仅查看）、告警上报/处理；无告警类型管理、用户管理、操作日志菜单 |
+
+## 项目结构
+
+```
+src/
+├── main.ts                  # 入口：注册 ElementPlus、Pinia、Router、图标
+├── App.vue                  # 根组件
+├── assets/
+│   ├── main.css             # 全局样式（布局、卡片、表格等）
+│   └── base.css             # 基础样式
+├── router/
+│   └── index.ts             # 路由配置 + 登录守卫
+├── stores/
+│   └── user.ts              # Pinia 用户状态（token、用户信息、角色）
+├── utils/
+│   └── request.ts           # Axios 封装（token 注入、401 拦截）
+├── views/
+│   ├── login.vue            # 登录页
+│   ├── layout.vue           # 整体布局（侧边栏 + 顶栏）
+│   ├── dashboard/index.vue  # 系统首页（统计卡片 + ECharts 图表 + 最近告警）
+│   ├── station/index.vue    # 站点管理
+│   ├── route/index.vue      # 线路管理（含站点选择排序）
+│   ├── bus/index.vue        # 公交车管理
+│   ├── alarm/index.vue      # 告警管理（上报/处理/删除）
+│   ├── alarmType/index.vue  # 告警类型管理（仅管理员）
+│   ├── user/index.vue       # 用户管理（仅管理员）
+│   └── log/index.vue        # 操作日志（仅管理员可删除/清空）
+└── components/              # 通用组件（Vite 模板残留，业务未使用）
+```
+
+## 功能模块说明
+
+### 系统首页 (Dashboard)
+- 顶部统计卡片：站点总数、线路总数、公交车总数、待处理告警数
+- ECharts 饼图：车辆状态分布（在线/离线/检修/运营中）
+- ECharts 柱状图：告警类型统计
+- 最近告警列表
+
+### 站点管理
+- 分页表格展示站点列表，支持按站点名称搜索
+- 新增/编辑站点弹窗表单
+- 删除站点（仅管理员）
+
+### 线路管理
+- 分页表格展示线路列表
+- 新增/编辑线路时可选择并排序途经站点
+- 删除线路（仅管理员）
+
+### 公交车管理
+- 分页表格展示车辆列表，支持按车牌搜索、按状态筛选
+- 新增/编辑车辆弹窗表单（绑定线路）
+- 删除车辆（仅管理员）
+
+### 告警管理
+- 分页表格展示告警列表，支持按状态筛选
+- 上报告警（选择车辆、告警类型、描述）
+- 处理告警（填写处理措施）
+- 删除告警
+
+### 告警类型管理（仅管理员）
+- 告警类型的增删改查
+
+### 用户管理（仅管理员）
+- 用户列表、新增/编辑用户、启用/禁用账号、分配角色
+
+### 操作日志（仅管理员可管理）
+- 按操作人、模块筛选查询
+- 查看请求参数、IP、耗时、执行状态
+- 删除单条日志、清空全部日志
+
+## 权限控制
+
+- **路由守卫**：未登录访问任意页面自动跳转 `/login`
+- **菜单控制**：侧边栏根据角色渲染，`SAFETY` 角色看不到告警类型管理、用户管理、操作日志菜单
+- **按钮控制**：表格中的新增/编辑/删除按钮根据 `roleCode === 'ADMIN'` 条件渲染
+- **后端校验**：即使绕过前端，后端接口也会校验角色，非管理员调用增删改接口返回错误
+
+## 请求封装
+
+`src/utils/request.ts` 基于 Axios：
+
+- 请求拦截：自动从 localStorage 读取 token，注入 `Authorization: Bearer {token}`
+- 响应拦截：统一处理错误提示；401 时清除本地登录态并跳转登录页
+
+## 路由表
+
+| 路径 | 页面 | 访问权限 |
+|------|------|----------|
+| `/login` | 登录页 | 公开 |
+| `/dashboard` | 系统首页 | 已登录 |
+| `/station` | 站点管理 | 已登录 |
+| `/route` | 线路管理 | 已登录 |
+| `/bus` | 公交车管理 | 已登录 |
+| `/alarm` | 告警管理 | 已登录 |
+| `/alarmType` | 告警类型管理 | 仅管理员可见 |
+| `/user` | 用户管理 | 仅管理员可见 |
+| `/log` | 操作日志 | 已登录（管理员可删除） |
+
+## 环境配置
+
+开发环境下 `/api` 代理配置在 `vite.config.ts` 中指向后端 `http://127.0.0.1:8080`。如需修改后端地址，编辑该文件中的 proxy 配置。
