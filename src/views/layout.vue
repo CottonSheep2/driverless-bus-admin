@@ -30,6 +30,14 @@
           <el-icon><Collection /></el-icon>
           <span>告警类型管理</span>
         </el-menu-item>
+        <el-menu-item index="/schedule">
+          <el-icon><Calendar /></el-icon>
+          <span>排班计划管理</span>
+        </el-menu-item>
+        <el-menu-item index="/trip">
+          <el-icon><Van /></el-icon>
+          <span>派车车次任务管理</span>
+        </el-menu-item>
         <el-menu-item index="/log" v-if="userStore.userInfo.roleCode === 'ADMIN'">
           <el-icon><Document /></el-icon>
           <span>操作日志</span>

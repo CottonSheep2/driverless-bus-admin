@@ -17,6 +17,8 @@ const routes = [
       { path: 'bus', name: '公交车管理', component: () => import('@/views/bus/index.vue') },
       { path: 'alarm', name: '告警管理', component: () => import('@/views/alarm/index.vue') },
       { path: 'alarmType', name: '告警类型管理', component: () => import('@/views/alarmType/index.vue') },
+      { path: 'schedule', name: '排班计划管理', component: () => import('@/views/schedule/index.vue') },
+      { path: 'trip', name: '派车车次任务管理', component: () => import('@/views/trip/index.vue') },
       { path: 'log', name: '操作日志', component: () => import('@/views/log/index.vue') },
       { path: 'user', name: '用户管理', component: () => import('@/views/user/index.vue') },
     ],

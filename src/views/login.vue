@@ -13,10 +13,6 @@
           <el-button type="primary" size="large" style="width: 100%" :loading="loading" @click="handleLogin">登 录</el-button>
         </el-form-item>
       </el-form>
-      <div class="login-tip">
-        <p>管理员：admin / 123456</p>
-        <p>安全员：safety / 123456</p>
-      </div>
     </div>
   </div>
 </template>
@@ -80,14 +76,5 @@ async function handleLogin() {
   margin-bottom: 30px;
   color: #1e3c72;
   font-size: 20px;
-}
-.login-tip {
-  text-align: center;
-  color: #999;
-  font-size: 12px;
-  margin-top: 10px;
-}
-.login-tip p {
-  margin: 4px 0;
 }
 </style>
